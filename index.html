@@ -13,4 +13,28 @@
 <body>
   <p>cmk</p>
 </body>
+<script type="text/javascript">
+   window.onload = function () {
+       console.log(WebSocket)
+       if(WebSocket){
+           alert('支持websocket');
+       }else{
+           alert('不支持websocket');
+           return false;
+       }
+       var websoket = new WebSocket('ws://localhost:8181');
+       websoket.onopen = function (data) {
+           websoket.send('hello');
+           console.log('发送中...');
+           console.log(data);
+       };
+       websoket.onmessage = function (ele) {
+            console.log(ele);
+       }
+       websoket.close = function () {
+           console.log('关闭');
+       }
+
+   }
+</script>
 </html>
