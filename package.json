@@ -1,0 +1,25 @@
+{
+  "name": "cmk",
+  "version": "1.0.0",
+  "description": "nodeJS",
+  "main": "index.js",
+  "dependencies": {
+    "ws": "^3.1.0"
+  },
+  "devDependencies": {
+    "jquery": "^3.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CHitenK/nodeJSstudy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CHitenK/nodeJSstudy/issues"
+  },
+  "homepage": "https://github.com/CHitenK/nodeJSstudy#readme"
+}
