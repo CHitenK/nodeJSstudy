@@ -10,31 +10,128 @@
     <meta name="author" content="CMK" />
     <title>首页</title>
 </head>
+<style type="text/css" >
+   .text-box{
+       width: 450px;
+
+       height: 500px;
+       border: solid 1px black;
+       padding: 20px 14px;
+       overflow: auto;
+       margin: auto;
+       margin-top: 48px;
+       position: relative;
+   }
+   .index-eh{
+       width: 100%;
+       position: fixed;
+       background: white;
+       border-left: solid 1px black;
+       border-right: solid 1px black;
+       left: 0px;
+       top: 0px;
+       height: 36px;
+       text-align: center;
+       line-height: 36px;
+       font-size: 16px;
+   }
+    .text-ep{
+
+        width: 480px;
+        height: 40px;
+        margin: auto;
+        margin-top:12px;
+        text-align: left;
+    }
+   .text-ep input{
+       height: 40px;
+       width: 350px;
+   }
+    .span-btn{
+        display: inline-block;
+        width: 100px;
+        height: 40px;
+        background: #0064c0;
+        color: white;
+        text-align: center;
+        line-height: 38px;
+        float: right;
+        cursor: pointer;
+    }
+    .text-item{
+        word-wrap : break-word;
+        font-size: 14px;
+        max-width: 250px;
+        min-height: 40px;
+        margin-bottom: 10px;
+    }
+</style>
 <body>
-  <p>cmk</p>
+<h1 class="index-eh"></h1>
+  <div class="text-box">
+
+     <!--<div class="text-item">-->
+        <!--<span>匿名：</span>-->
+         <!--fsasadsgfdsfdgg-->
+     <!--</div>-->
+
+  </div>
+  <p class="text-ep">
+      <input class="input-text" type="text" placeholder="输入内容" >
+      <span class="span-btn">发送</span>
+  </p>
 </body>
+<script type="text/javascript" src="./jquery.min.js"  async="false"></script>
 <script type="text/javascript">
    window.onload = function () {
        console.log(WebSocket)
        if(WebSocket){
-           alert('支持websocket');
+           console.log('支持websocket');
        }else{
            alert('不支持websocket');
            return false;
        }
        var websoket = new WebSocket('ws://localhost:8181');
+       console.log(websoket.readyState);
        websoket.onopen = function (data) {
-           websoket.send('hello');
-           console.log('发送中...');
-           console.log(data);
+            websoket.send('start');
+            console.log(data)
        };
        websoket.onmessage = function (ele) {
-            console.log(ele);
+            var targetData = ele.data;
+           console.log(targetData);
+//            if(targetData=='nothing'){
+//                return false;
+//            }else{
+//                var data = JSON.parse(targetData);
+//                if(data.initNum){
+//                    var userNmae = '用户'+data.initNum;
+//                   $('.index-eh').html(userNmae);
+//                    return false;
+//                }
+//                if(!data.length){
+//                    var html = '<div class="text-item">'+
+//                        '<span>用户'+data.index+':</span>'+  data.massage+'</div>';
+//                    $('.text-box').append(html);
+//                }else{
+//                    $('.text-item').empty();
+//                    for(var i=0;i<data.length;i++){
+//                        var html = '<div class="text-item">'+
+//                            '<span>用户'+data[i].index+': </span>'+  data[i].massage+'</div>';
+//                        $('.text-box').append(html);
+//                    }
+//                }
+//            }
+
        }
        websoket.close = function () {
            console.log('关闭');
        }
-
+      $('.span-btn').on('click',function () {
+          var text = $('.input-text').val();
+          websoket.send(text);
+          $('.input-text').val('');
+      })
    }
 </script>
 </html>
