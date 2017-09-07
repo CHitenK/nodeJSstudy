@@ -8,12 +8,11 @@
     <meta name="description" content="联合数据 大数据服务 高速公路资产全生命周期管理 交通运输数据资源 人工智能平台 区块链解决 物联网平台解决" />
     <meta name="format-detection" content="telephone=no"/>
     <meta name="author" content="CMK" />
-    <title>首页</title>
+    <title>聊天室</title>
 </head>
 <style type="text/css" >
    .text-box{
        width: 450px;
-
        height: 500px;
        border: solid 1px black;
        padding: 20px 14px;
@@ -61,76 +60,179 @@
     .text-item{
         word-wrap : break-word;
         font-size: 14px;
-        max-width: 250px;
+         width: 80%;
         min-height: 40px;
         margin-bottom: 10px;
+        text-align: left;
+    }
+    .set-box{
+        position: fixed;
+        top:0px;
+        bottom:0px;
+        left: 0px;
+        right: 0px;
+        background: #ccc;
+        opacity: 0.99;
+    }
+    .set-name{
+        width: 500px;
+        height: 110px;
+        background: white;
+        margin: auto;
+        margin-top:300px;
+    }
+    .name{
+        display: inline-block;
+        width: 350px;
+        height: 40px;
+        padding-left: 10px;
+        margin-top: 30px;
+        margin-left: 15px;
+    }
+    .set-btn{
+        display: inline-block;
+        width: 80px;
+        height: 40px;
+        margin-top: 5px;
+        line-height: 40px;
+        text-align: center;
+        background: #0064c0;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 30px;
+    }
+   .text-item-right{
+       word-wrap : break-word;
+       font-size: 14px;
+       float: right;
+       width: 100%;
+       min-height: 40px;
+       margin-bottom: 10px;
+       text-align: right;
+   }
+    .text-box:after{
+        display: block;
+        content: '';
+        width: 100%;
+        height: 1px;
+        clear: both;
+        overflow: hidden;
     }
 </style>
 <body>
+
 <h1 class="index-eh"></h1>
   <div class="text-box">
-
-     <!--<div class="text-item">-->
-        <!--<span>匿名：</span>-->
-         <!--fsasadsgfdsfdgg-->
-     <!--</div>-->
-
+   <!--  <div class="text-item-right">
+         fsasadsgfdsfdgg
+         <span>：匿名</span>
+     </div>
+      <div class="text-item">
+          <span>匿名:</span>
+          fsasadsgfdsfdgg
+      </div>-->
   </div>
   <p class="text-ep">
       <input class="input-text" type="text" placeholder="输入内容" >
       <span class="span-btn">发送</span>
   </p>
+<div class="set-box">
+    <div class="set-name">
+        <input class="name" text="text" placeholder="请设置昵称">
+        <span class="set-btn">确定</span>
+    </div>
+</div>
 </body>
 <script type="text/javascript" src="./jquery.min.js"  async="false"></script>
 <script type="text/javascript">
    window.onload = function () {
-       console.log(WebSocket)
+       var userName = '';
+       var key =0;
+
+       if(sessionStorage.getItem('userName')){
+           $('.set-box').remove();
+           userName = sessionStorage.getItem('userName');
+           $('.index-eh').html(userName);
+       }
+       //昵称
+       $('.set-btn').on('click',function () {
+           var name = $('.name').val();
+           if(name.length <=0){
+               alert('请输入您的昵称');
+               $('.name').css('border','solid 1px red').focus();
+           }else{
+               sessionStorage.setItem('userName',name);
+               userName = name;
+               $('.index-eh').html(userName);
+               $('.set-box').remove();
+           }
+       })
+       //判断是否存在支持websocket
        if(WebSocket){
            console.log('支持websocket');
        }else{
            alert('不支持websocket');
            return false;
        }
+       // websocket
        var websoket = new WebSocket('ws://localhost:8181');
-       console.log(websoket.readyState);
+       //连接成功是触发
        websoket.onopen = function (data) {
             websoket.send('start');
-            console.log(data)
        };
+       //服务器发送信息给客户端时触发（客户端接收到信息时触发）
        websoket.onmessage = function (ele) {
             var targetData = ele.data;
-           console.log(targetData);
-//            if(targetData=='nothing'){
-//                return false;
-//            }else{
-//                var data = JSON.parse(targetData);
-//                if(data.initNum){
-//                    var userNmae = '用户'+data.initNum;
-//                   $('.index-eh').html(userNmae);
-//                    return false;
-//                }
-//                if(!data.length){
-//                    var html = '<div class="text-item">'+
-//                        '<span>用户'+data.index+':</span>'+  data.massage+'</div>';
-//                    $('.text-box').append(html);
-//                }else{
-//                    $('.text-item').empty();
-//                    for(var i=0;i<data.length;i++){
-//                        var html = '<div class="text-item">'+
-//                            '<span>用户'+data[i].index+': </span>'+  data[i].massage+'</div>';
-//                        $('.text-box').append(html);
-//                    }
-//                }
-//            }
+            if(targetData=='nothing'){
+                return false;
+            }else{
+                var data = JSON.parse(targetData);
+                if(!data.length){
+                    return false;
+                }else{
+                    for(var i=key;i<data.length;i++){
+                        if(data[i].Name == userName){
+                            var html =  ' <div class="text-item-right"> "'+ data[i].text +
+                                '"<span>  : '+data[i].Name+'</span>'+ '</div>' ;
+                        }else{
+                            var html = '<div class="text-item">'+
+                                '<span>'+data[i].Name+' : "</span>'+  data[i].text+' "</div>';
+                        }
+                        //滚动条设置
+                        $('.text-box').append(html).scrollTop($('.text-box').height());
+                    }
+                    key=data.length;
+                }
+            }
 
        }
        websoket.close = function () {
            console.log('关闭');
        }
+       //send
       $('.span-btn').on('click',function () {
           var text = $('.input-text').val();
-          websoket.send(text);
+          if(text.length<=0){
+              return false;
+          }
+          var textObj = {Name:userName,text:text};
+          websoket.send(JSON.stringify(textObj));
           $('.input-text').val('');
+          $('.input-text').focus();
+      })
+       //send
+       $('.input-text').keypress(function (evt) {
+           var text = $('.input-text').val();
+          if(evt.keyCode==13) {
+              if(text.length<=0){
+                  return false;
+              }
+              var text = $('.input-text').val();
+              var textObj = {Name:userName,text:text};
+              websoket.send(JSON.stringify(textObj));
+              $('.input-text').val('');
+              $('.input-text').focus();
+          }
       })
    }
 </script>
