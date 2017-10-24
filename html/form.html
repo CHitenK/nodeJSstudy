@@ -27,7 +27,7 @@
         </li>
         <li>
             <label >其他：</label>
-            <input type="text" id="" name = 'username'>
+            <input type="text" id="other" name = 'other'>
         </li>
     </form>
     <div class="sum-btn" style="cursor: pointer">
@@ -38,10 +38,15 @@
     $(function () {
         // JQ 获取表单数据
         $('.sum-btn').on('click',function () {
-            var targetData = new FormData($('#form')[0]);
+            //var targetData = new FormData($('#form')[0]);
             $.ajax({
-                url:'ddd',
-                data:targetData,
+                url:'http://localhost:8787/',
+                data:{
+                    usename:$('#usename').val(),
+                    phone:$('#phone').val(),
+                    password:$('#password').val(),
+                    other:$('#other').val()
+                },
                 async:true,
                 type:'post',
                 contentType:false,
